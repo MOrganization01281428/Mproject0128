@@ -10,4 +10,11 @@ class UM_PlayerAnim :public UAnimInstance
 
 public:
 	UM_PlayerAnim();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerAnim")
+		float MoveSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerAnim")
+		FRotator SpinRotator;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerAnim")
+		float Direction;
 };
