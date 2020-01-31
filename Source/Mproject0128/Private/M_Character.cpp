@@ -1,13 +1,16 @@
-#include "M_Character.h"
+#include "..\Public\M_Character.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
-#include "..\Public\M_Character.h"
+#include "Components/InputComponent.h"
+#include "Engine.h"
+
 
 AM_Character::AM_Character()
 {
 	CharacterMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh"));
+	CharacterMesh->SetSimulatePhysics(true);
 	RootComponent = CharacterMesh;
 
 	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraArm"));
@@ -16,30 +19,31 @@ AM_Character::AM_Character()
 	Camera->SetupAttachment(CameraArm);
 }
 
-Void AM_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) 
+void AM_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) 
 {
-	Super::SetupInputComponent(PlayerInputComponent);
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	check(PlayerInputComponent);
 
-	PlayerInputComponent->BindAxis("MoveForward", this, &MoveForward);
-	PlayerInputComponent->BindAxis("MoveLeft", this, &MoveLeft);
+	PlayerInputComponent->BindAxis("MoveForward", this, &AM_Character::MoveForward);
+	PlayerInputComponent->BindAxis("MoveLeft", this, &AM_Character::MoveLeft);
 }
+
 
 void AM_Character::MoveForward(float value)
 {
-	if (Value != 0.f && Controller) {
+	if (value != 0.f && Controller) {
 		const FRotator Rotation = Controller->GetControlRotation();
 		FVector Direction = FRotationMatrix(Rotation).GetScaledAxis(EAxis::X);
-		AddMovementInput(Direction, Value);
+		AddMovementInput(Direction, value);
 	}
 }
 
 void AM_Character::MoveLeft(float value)
 {
-	if (Value != 0.f && Controller) {
+	if (value != 0.f && Controller) {
 		const FQuat Rotation = GetActorQuat();
 		FVector Direction = FQuatRotationMatrix(Rotation).GetScaledAxis(EAxis::Y);
-		AddMovementInput(Direction, Value);
+		AddMovementInput(Direction, value);
 	}
 }

@@ -27,9 +27,10 @@ public:
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
-private:
-	void MoveForward(float value);
-	void MoveLeft(float value);
+	UFUNCTION(BlueprintCallable)
+		void MoveForward(float value);
+	UFUNCTION(BlueprintCallable)
+		void MoveLeft(float value);
 
 
 	//virtual void BeginPlay() override;
