@@ -11,6 +11,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class AM_MagicBullet;
 
+
 UCLASS(Blueprintable)
 class AM_Character :public ACharacter
 {
@@ -19,9 +20,15 @@ class AM_Character :public ACharacter
 public:
 	AM_Character();
 
-//关联的实体类：Magic实体、道具装备、Buff外衣等；
-	UPROPERTY(EditDefaultsOnly, Category = "Projectile")
-		TSubclassOf<AM_MagicBullet> MagicBulletClass;
+//蓝图类
+	//实体类引用
+	TSubclassOf<AActor> MatchBPMgaicActor;//这个指针将装载获取的蓝图类引用，我们口头规定只在匹配蓝图类BPMgaicActor时使用；
+
+//关联的实体类：Magic实体、道具装备、Buff外衣等；但是显然我们要使用的是他的蓝图子类，这里下面的几行是没用的
+//	UPROPERTY(EditDefaultsOnly, Category = "Projectile")
+//		TSubclassOf<AM_MagicBullet> MagicBulletClass;	
+//		UClass* bpCLass;
+
 //关联控制类：数据处理，玩家（非角色）控制
 	/*
 

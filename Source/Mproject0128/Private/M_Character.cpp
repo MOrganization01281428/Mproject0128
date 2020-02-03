@@ -14,22 +14,38 @@
 
 
 AM_Character::AM_Character()
-{  //创建基本骨骼网格体组件
-	CharacterMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh"));
-	RootComponent = CharacterMesh;
+{  
 	//CharacterMesh->SetSimulatePhysics(true);//物理模拟非常消耗性能，不必要的时候不要开启，比如死亡时布娃娃效果可以开启；
 
 
 	//创建摄像机组件和弹簧臂
 	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraArm"));
-	CameraArm->SetupAttachment(RootComponent);
+	CameraArm->SetupAttachment(GetMesh());
+	CameraArm->bUsePawnControlRotation = true;
+
+	// Create a CameraComponent	
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(CameraArm);
+	Camera->RelativeLocation = FVector(0, 0, BaseEyeHeight); // Position the camera
+	CameraArm->bUsePawnControlRotation = false;
+
+	//创建基本骨骼网格体组件
+	CharacterMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh"));
+	CharacterMesh->SetupAttachment((USceneComponent*)GetCapsuleComponent());
+	//RootComponent = CharacterMesh;//让一个独立的胶囊体作为根组件，Mesh悬挂在根组件上或者悬挂在相机上；
 
 	//创建发射锚点组件
 	MagicSlotComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EffectSlot"));
 	MagicSlotComponent->CastShadow = false;
-	//MagicSlotComponent->SetUpAttachment(RootComponent);
+	//MagicSlotComponent->SetUpAttachment(GetCapsuleComponent());
+	
+
+	//获取相关蓝图类的引用,类型和对象；
+	static ConstructorHelpers::FClassFinder<AActor> BP_ActorMatch(TEXT("Blueprint'/Game/BluePrint/Skill/BPM_MagicBullet.BPM_MagicBullet_C'"));
+	if (BP_ActorMatch.Succeeded()) { MatchBPMgaicActor = BP_ActorMatch.Class; }
+
+	static ConstructorHelpers::FObjectFinder<UClass> BP_ClassFinder(TEXT("Blueprint'/Game/BluePrint/Skill/BPM_MagicBullet.BPM_MagicBullet_C'"));
+	if (BP_ClassFinder.Object) { UClass* bpClass = BP_ClassFinder.Object; }
 
 }
 
@@ -98,12 +114,12 @@ void AM_Character::OnStopJump()
 
 void AM_Character::Fire()
 {
-	if (MagicBulletClass)
+	if (MatchBPMgaicActor)
 	{
 		//获取生成坐标向量
 		FVector MuzzleLocation = MagicSlotComponent->GetComponentLocation();
 		FRotator MuzzleRotation = Controller->GetControlRotation();
-		GetWorld()->SpawnActor<AActor>(MagicBulletClass, MuzzleLocation, MuzzleRotation);
+		GetWorld()->SpawnActor<AM_MagicBullet>(MatchBPMgaicActor,MuzzleLocation, MuzzleRotation);
 		//配置碰撞->信息//也可以不设置，如果actor里面设置了；
 		//Set Spawn Collision Handling Override
 		//FActorSpawnParameters ActorSpawnParams;

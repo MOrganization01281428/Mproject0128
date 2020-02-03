@@ -11,5 +11,9 @@ class AM_Controller :public APlayerController
 
 public:
 	AM_Controller();
+	/*
+	public:
+	TSubClass<m_PLAYERSTATE> PLAYER
+	*/
 
 };
