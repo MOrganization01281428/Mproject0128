@@ -1,22 +1,36 @@
 #include "..\Public\M_Character.h"
-#include "Kismet/GameplayStatics.h"
-#include "Components/SkeletalMeshComponent.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "Camera/CameraComponent.h"
-#include "Components/InputComponent.h"
+
+
+#include "GameFramework/SpringArmComponent.h"//摄像机弹簧臂控制
+#include "GameFramework/CharacterMovementComponent.h"//角色移动控制
+
+#include "Camera/CameraComponent.h"//摄像机
+
+#include "Components/InputComponent.h"//输入组件
+#include "Components/SkeletalMeshComponent.h"//骨骼组件
+
+#include "Kismet/GameplayStatics.h"//静态工具包，失去该引用可能会带来错误（具体未了解）
 #include "Engine.h"
 
 
 AM_Character::AM_Character()
-{
+{  //创建基本骨骼网格体组件
 	CharacterMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh"));
-	CharacterMesh->SetSimulatePhysics(true);
 	RootComponent = CharacterMesh;
+	//CharacterMesh->SetSimulatePhysics(true);//物理模拟非常消耗性能，不必要的时候不要开启，比如死亡时布娃娃效果可以开启；
 
+
+	//创建摄像机组件和弹簧臂
 	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraArm"));
 	CameraArm->SetupAttachment(RootComponent);
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(CameraArm);
+
+	//创建发射锚点组件
+	MagicSlotComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EffectSlot"));
+	MagicSlotComponent->CastShadow = false;
+	//MagicSlotComponent->SetUpAttachment(RootComponent);
+
 }
 
 void AM_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) 
@@ -24,12 +38,19 @@ void AM_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	check(PlayerInputComponent);
-
+	//绑定函数
 	PlayerInputComponent->BindAxis("MoveForward", this, &AM_Character::MoveForward);
 	PlayerInputComponent->BindAxis("MoveLeft", this, &AM_Character::MoveLeft);
+	PlayerInputComponent->BindAxis("LookUp", this, &AM_Character::LookUp);
+	PlayerInputComponent->BindAxis("LookRight", this, &AM_Character::LookRight);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AM_Character::OnStartJump);
+	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AM_Character::OnStopJump);
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AM_Character::Fire);
+	PlayerInputComponent->BindAction("Meditation", IE_Pressed, this, &AM_Character::OnStartMeditation);
+	//PlayerInputComponent->BindAction("Meditation", IE_Released, this, &AM_Character::OnStopMeditation);
 }
 
-
+//基础控制行为函数组：
 void AM_Character::MoveForward(float value)
 {
 	if (value != 0.f && Controller) {
@@ -47,3 +68,55 @@ void AM_Character::MoveLeft(float value)
 		AddMovementInput(Direction, value);
 	}
 }
+
+void AM_Character::LookUp(float value)
+{
+	if (value != 0 && Controller)
+	{
+		AddControllerPitchInput(value);
+	}
+}
+
+void AM_Character::LookRight(float value)
+{
+	if (value != 0 && Controller)
+	{
+		AddControllerYawInput(value);
+	}
+}
+
+void AM_Character::OnStartJump()
+{
+	bPressedJump = true;
+}
+
+void AM_Character::OnStopJump()
+{
+	bPressedJump = false;
+	StopJumping();
+}
+
+void AM_Character::Fire()
+{
+	if (MagicBulletClass)
+	{
+		//获取生成坐标向量
+		FVector MuzzleLocation = MagicSlotComponent->GetComponentLocation();
+		FRotator MuzzleRotation = Controller->GetControlRotation();
+		GetWorld()->SpawnActor<AActor>(MagicBulletClass, MuzzleLocation, MuzzleRotation);
+		//配置碰撞->信息//也可以不设置，如果actor里面设置了；
+		//Set Spawn Collision Handling Override
+		//FActorSpawnParameters ActorSpawnParams;
+		//ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+		//生成一个Actor类对象实例
+		// spawn the projectile at the muzzle
+		//GetWorld()->SpawnActor<AFPSProjectile>(MagicBulletClass, MuzzleLocation, MuzzleRotation, ActorSpawnParams);
+	}
+
+}
+
+void AM_Character::OnStartMeditation()
+{
+}
+
+
