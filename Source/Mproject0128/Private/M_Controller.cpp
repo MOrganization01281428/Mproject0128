@@ -2,5 +2,5 @@
 
 AM_Controller::AM_Controller()
 {
-
+	bShowMouseCursor = true;
 }
