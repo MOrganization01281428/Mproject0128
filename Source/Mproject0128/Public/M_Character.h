@@ -2,7 +2,10 @@
 
 #include "CoreMinimal.h"//核心引用文件，未包含可能会带来未知错误
 #include "GameFramework/Character.h"//继承角色类
+
 #include "M_MagicBullet.h"
+#include "M_Controller.h"
+#include "M_PlayerState.h"
 
 #include "M_Character.generated.h"//生成的编译文件，总是要放在最后的
 
@@ -28,11 +31,15 @@ public:
 //	UPROPERTY(EditDefaultsOnly, Category = "Projectile")
 //		TSubclassOf<AM_MagicBullet> MagicBulletClass;	
 //		UClass* bpCLass;
+	//UPROPERTY(EditDefaultsOnly, Category = "PlayerState")
+	//TSubclassOf<APlayerState> PlayerState;
+
 
 //关联控制类：数据处理，玩家（非角色）控制
-	/*
+	
+	class AM_Controller* SPController;
 
-	*/
+	
 
 //组件挂载
 	UPROPERTY(EditAnywhere, Category = "Mesh")
@@ -71,9 +78,10 @@ public:
 		void Fire();
 	UFUNCTION(BlueprintCallable)
 		void OnStartMeditation();
+	UFUNCTION(BlueprintCallable)
+		void OnStopMeditation();
 
-
-	//virtual void BeginPlay() override;
+	virtual void BeginPlay() override;
 	//virtual void Tick(float DeltaTime) override;
 
 };
