@@ -53,23 +53,23 @@ public:
 
 
 	//基础控制行为函数组：
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable,Category = "Control")
 		void MoveForward(float value);
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable,Category = "Control")
 		void MoveLeft(float value);
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable,Category = "Control")
 		void LookUp(float value);
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable,Category = "Control")
 		void LookRight(float value);
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable,Category = "Control")
 		void OnStartJump();
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable,Category = "Control")
 		void OnStopJump();
 
 	//特性控制行为函数组
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable,Category = "Control")
 		void Fire();
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable,Category = "Control")
 		void OnStartMeditation();
 
 
