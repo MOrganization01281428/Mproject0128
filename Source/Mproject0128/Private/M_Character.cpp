@@ -13,6 +13,32 @@
 #include "Engine.h"
 
 
+//总结：
+/*
+1.挂载组件-实例化组件并完成配置√
+2.绑定输入轴-实现基本函数√
+3.获取引用的指针，调用其他C++和蓝图类的数据√
+构建函数：
+	实例化组件，并完成设置
+	获取需要蓝图类的引用，如发射的测试弓箭
+BeginPlay
+	获取Controller指针
+其他函数实现（移动，Fire，Meditation）
+	Movement Base系列
+	Fire系列
+	Meditation系列
+
+【Character与其他类的通信清单】
+通信引用查询： SP~：SPController；
+通信接口：暂无；
+
+通信内容：
+①使用技能时，修改PlayerState中的变量，健康值，魔法值等
+【待完成】②传出坐标地址存储
+【待完成】③生成伤害盒子传出伤害事件
+【排期】④存档系统与背包系统与Buff
+
+*/
 AM_Character::AM_Character()
 {  
 	//CharacterMesh->SetSimulatePhysics(true);//物理模拟非常消耗性能，不必要的时候不要开启，比如死亡时布娃娃效果可以开启；
@@ -120,6 +146,16 @@ void AM_Character::Fire()
 		FVector MuzzleLocation = MagicSlotComponent->GetComponentLocation();
 		FRotator MuzzleRotation = Controller->GetControlRotation();
 		GetWorld()->SpawnActor<AM_MagicBullet>(MatchBPMgaicActor,MuzzleLocation, MuzzleRotation);
+<<<<<<< Updated upstream
+=======
+		
+		if (SPController->SPState) 
+		{
+			SPController->SPState->OnCostMana(100); 
+			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("fire Cost! Mana"));
+		}
+
+>>>>>>> Stashed changes
 		//配置碰撞->信息//也可以不设置，如果actor里面设置了；
 		//Set Spawn Collision Handling Override
 		//FActorSpawnParameters ActorSpawnParams;
@@ -133,6 +169,39 @@ void AM_Character::Fire()
 
 void AM_Character::OnStartMeditation()
 {
+<<<<<<< Updated upstream
 }
 
 
+=======
+	IsMeditation=true;
+	if (SPController->SPState && IsMeditation)
+	{
+		while (IsMeditation)
+		{
+			SPController->SPState->OnRecoverMana(10);
+			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, TEXT("[OnStartMeditation]Manarecover!:"));
+		}
+		
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("[OnStartMeditation]ManaRecover Wrong!"));
+	}
+
+}
+
+void AM_Character::OnStopMeditation()
+{
+	IsMeditation = false;
+
+}
+
+void AM_Character::BeginPlay()
+{
+	Super::BeginPlay();
+
+	//如果控制器指针为空,添加引用
+	SPController = Cast<AM_Controller>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+}
+>>>>>>> Stashed changes

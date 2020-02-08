@@ -7,6 +7,7 @@
 #include "M_Character.generated.h"//生成的编译文件，总是要放在最后的
 
 class USkeletalMeshComponent;
+class UStaticMeshComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class AM_MagicBullet;
@@ -22,7 +23,8 @@ public:
 
 //蓝图类
 	//实体类引用
-	TSubclassOf<AActor> MatchBPMgaicActor;//这个指针将装载获取的蓝图类引用，我们口头规定只在匹配蓝图类BPMgaicActor时使用；
+	TSubclassOf<AActor> MatchBPMgaicActor;
+	//这个指针将装载获取的蓝图类引用，我们口头规定只在匹配蓝图类BPMgaicActor时使用；
 
 //关联的实体类：Magic实体、道具装备、Buff外衣等；但是显然我们要使用的是他的蓝图子类，这里下面的几行是没用的
 //	UPROPERTY(EditDefaultsOnly, Category = "Projectile")
@@ -71,9 +73,21 @@ public:
 		void Fire();
 	UFUNCTION(BlueprintCallable,Category = "Control")
 		void OnStartMeditation();
+<<<<<<< Updated upstream
 
 
 	//virtual void BeginPlay() override;
 	//virtual void Tick(float DeltaTime) override;
+=======
+	UFUNCTION(BlueprintCallable，Category = "Control")
+		void OnStopMeditation();
+
+	virtual void BeginPlay() override;
+
+
+public:
+	bool IsMeditation;
+
+>>>>>>> Stashed changes
 
 };

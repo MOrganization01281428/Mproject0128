@@ -13,6 +13,22 @@ public:
 public:
 	void setHealth(float value);
 	void setMana(float value);
+<<<<<<< Updated upstream
+=======
+	float getMana();
+
+	void OnRecoverMana(float Recover);
+	void OnCostMana(float Cost);
+
+
+	//�浵ϵͳ
+	UFUNCTION(BlueprintCallable)
+		void SaveGame(FString SlotName);
+	UFUNCTION(BlueprintCallable)
+		void LoadGame(FString SlotName);
+
+	virtual void BeginPlay() override;
+>>>>>>> Stashed changes
 
 private:
 	float Health;
