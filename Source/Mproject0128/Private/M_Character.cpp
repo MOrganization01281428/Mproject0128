@@ -15,6 +15,7 @@
 
 AM_Character::AM_Character()
 {  
+	//构建函数里，需要配置组件，创建相关引用的指针；
 	//CharacterMesh->SetSimulatePhysics(true);//物理模拟非常消耗性能，不必要的时候不要开启，比如死亡时布娃娃效果可以开启；
 
 
@@ -35,12 +36,13 @@ AM_Character::AM_Character()
 	//RootComponent = CharacterMesh;//让一个独立的胶囊体作为根组件，Mesh悬挂在根组件上或者悬挂在相机上；
 
 	//创建发射锚点组件
-	MagicSlotComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EffectSlot"));
-	MagicSlotComponent->CastShadow = false;
-	//MagicSlotComponent->SetUpAttachment(GetCapsuleComponent());
+	MagicSlot = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EffectSlot"));
+	MagicSlot->CastShadow = false;
+	//MagicSlotComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
+	//MagicSlotComponent->SetupAttachment((USceneComponent*)GetCapsuleComponent());
 	
 
-	//获取相关蓝图类的引用,类型和对象；
+	//C++调用蓝图方法1：获取相关蓝图类的引用,类型和对象；
 	static ConstructorHelpers::FClassFinder<AActor> BP_ActorMatch(TEXT("Blueprint'/Game/BluePrint/Skill/BPM_MagicBullet.BPM_MagicBullet_C'"));
 	if (BP_ActorMatch.Succeeded()) { MatchBPMgaicActor = BP_ActorMatch.Class; }
 
@@ -63,7 +65,7 @@ void AM_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AM_Character::OnStopJump);
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AM_Character::Fire);
 	PlayerInputComponent->BindAction("Meditation", IE_Pressed, this, &AM_Character::OnStartMeditation);
-	//PlayerInputComponent->BindAction("Meditation", IE_Released, this, &AM_Character::OnStopMeditation);
+	PlayerInputComponent->BindAction("Meditation", IE_Released, this, &AM_Character::OnStopMeditation);
 }
 
 //基础控制行为函数组：
@@ -117,9 +119,18 @@ void AM_Character::Fire()
 	if (MatchBPMgaicActor)
 	{
 		//获取生成坐标向量
-		FVector MuzzleLocation = MagicSlotComponent->GetComponentLocation();
+		FVector MuzzleLocation = MagicSlot->GetComponentLocation();
 		FRotator MuzzleRotation = Controller->GetControlRotation();
 		GetWorld()->SpawnActor<AM_MagicBullet>(MatchBPMgaicActor,MuzzleLocation, MuzzleRotation);
+		
+		if (SPController->SPState) 
+		{
+			SPController->SPState->OnCostMana(100); 
+			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("fire Got! Cost Mana Character Right"));
+		}
+
+		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("fire使用成功"));
+
 		//配置碰撞->信息//也可以不设置，如果actor里面设置了；
 		//Set Spawn Collision Handling Override
 		//FActorSpawnParameters ActorSpawnParams;
@@ -133,6 +144,43 @@ void AM_Character::Fire()
 
 void AM_Character::OnStartMeditation()
 {
+	if (SPController->SPState)
+	{
+		SPController->SPState->SetIsMeditation(true);
+		SPController->SPState->OnRecoverMana(10);
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("ManaRecover!Character right!"));
+	}
+
 }
 
+void AM_Character::OnStopMeditation()
+{
+	if (SPController->SPState)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("got SPController->SPState"));
+		SPController->SPState->SetIsMeditation(false);
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("ManaCostStop"));
+	}
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("havent cost"));
+}
+
+void AM_Character::BeginPlay()
+{
+	Super::BeginPlay();
+
+	//如果控制器指针为空,添加引用
+	SPController = Cast<AM_Controller>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+}
+/*
+float AM_Character::GetAxisValue_MoveForward()
+{
+	return GetAxisValue("MoveForward");
+}
+
+float AM_Character::GetAxisValue_MoveRight()
+{
+	return 0.0f;
+}
+*/
 

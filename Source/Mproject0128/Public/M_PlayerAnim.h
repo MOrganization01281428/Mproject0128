@@ -3,7 +3,7 @@
 #include "Animation/AnimInstance.h"
 #include "M_PlayerAnim.generated.h"
 
-UCLASS()
+UCLASS(Blueprintable)
 class UM_PlayerAnim :public UAnimInstance
 {
 	GENERATED_BODY()
@@ -17,4 +17,9 @@ public:
 		FRotator SpinRotator;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerAnim")
 		float Direction;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerAnim")
+		float MoveForward;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PlayerAnim")
+		float MoveRight;
+
 };
