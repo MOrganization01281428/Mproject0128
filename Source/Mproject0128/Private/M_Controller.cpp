@@ -2,9 +2,7 @@
 
 AM_Controller::AM_Controller()
 {
-public:
 
-	AM_Controller();
 
 }
 

@@ -36,9 +36,9 @@ AM_Character::AM_Character()
 	//RootComponent = CharacterMesh;//让一个独立的胶囊体作为根组件，Mesh悬挂在根组件上或者悬挂在相机上；
 
 	//创建发射锚点组件
-	MagicSlotComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EffectSlot"));
-	MagicSlotComponent->CastShadow = false;
-	MagicSlotComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
+	MagicSlot = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EffectSlot"));
+	MagicSlot->CastShadow = false;
+	//MagicSlotComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
 	//MagicSlotComponent->SetupAttachment((USceneComponent*)GetCapsuleComponent());
 	
 
@@ -119,16 +119,17 @@ void AM_Character::Fire()
 	if (MatchBPMgaicActor)
 	{
 		//获取生成坐标向量
-		FVector MuzzleLocation = MagicSlotComponent->GetComponentLocation();
+		FVector MuzzleLocation = MagicSlot->GetComponentLocation();
 		FRotator MuzzleRotation = Controller->GetControlRotation();
 		GetWorld()->SpawnActor<AM_MagicBullet>(MatchBPMgaicActor,MuzzleLocation, MuzzleRotation);
-
+		
 		if (SPController->SPState) 
 		{
 			SPController->SPState->OnCostMana(100); 
+			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("fire Got! Cost Mana Character Right"));
 		}
 
-
+		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("fire使用成功"));
 
 		//配置碰撞->信息//也可以不设置，如果actor里面设置了；
 		//Set Spawn Collision Handling Override
@@ -147,7 +148,7 @@ void AM_Character::OnStartMeditation()
 	{
 		SPController->SPState->SetIsMeditation(true);
 		SPController->SPState->OnRecoverMana(10);
-
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("ManaRecover!Character right!"));
 	}
 
 }
@@ -156,9 +157,11 @@ void AM_Character::OnStopMeditation()
 {
 	if (SPController->SPState)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("got SPController->SPState"));
 		SPController->SPState->SetIsMeditation(false);
-
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("ManaCostStop"));
 	}
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("havent cost"));
 }
 
 void AM_Character::BeginPlay()
@@ -169,5 +172,15 @@ void AM_Character::BeginPlay()
 	SPController = Cast<AM_Controller>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
 }
+/*
+float AM_Character::GetAxisValue_MoveForward()
+{
+	return GetAxisValue("MoveForward");
+}
 
+float AM_Character::GetAxisValue_MoveRight()
+{
+	return 0.0f;
+}
+*/
 

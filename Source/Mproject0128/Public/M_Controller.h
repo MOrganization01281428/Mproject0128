@@ -24,9 +24,5 @@ public:
 
 public:
 	virtual void BeginPlay() override;
-	/*
-	public:
-	TSubClass<m_PLAYERSTATE> PLAYER
-	*/
 
 };

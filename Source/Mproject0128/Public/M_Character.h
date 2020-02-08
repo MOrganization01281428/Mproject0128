@@ -7,6 +7,7 @@
 #include "M_Controller.h"
 #include "M_PlayerState.h"
 
+
 #include "M_Character.generated.h"//生成的编译文件，总是要放在最后的
 
 class USkeletalMeshComponent;
@@ -38,15 +39,15 @@ public:
 //关联控制类：数据处理，玩家（非角色）控制
 	
 	class AM_Controller* SPController;
-
+	class AM_PlayerState* SPState;
 	
 
 //组件挂载
 	UPROPERTY(EditAnywhere, Category = "Mesh")
 		USkeletalMeshComponent* CharacterMesh;
 
-	UPROPERTY(EditAnywhere, Category = "Magic")
-		UStaticMeshComponent* MagicSlotComponent;
+	UPROPERTY(EditAnywhere, Category = "Mesh")
+		UStaticMeshComponent* MagicSlot;
 
 	UPROPERTY(EditAnywhere, Category = "Camera")
 		USpringArmComponent* CameraArm;
@@ -83,5 +84,12 @@ public:
 
 	virtual void BeginPlay() override;
 	//virtual void Tick(float DeltaTime) override;
+	/*
+public:
+	UFUNCTION(BlueprintCallable)
+	float GetAxisValue_MoveForward();
+	UFUNCTION(BlueprintCallable)
+	float GetAxisValue_MoveRight();
+	*/
 
 };
