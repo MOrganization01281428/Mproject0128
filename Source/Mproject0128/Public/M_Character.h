@@ -88,6 +88,6 @@ public:
 public:
 	bool IsMeditation;
 
->>>>>>> Stashed changes
+
 
 };

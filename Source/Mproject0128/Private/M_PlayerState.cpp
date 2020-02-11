@@ -107,4 +107,4 @@ void AM_PlayerState::BeginPlay()
 	SPController = Cast<AM_Controller>(UGameplayStatics::GetPlayerController(GetWorld(), 0));//已经在Character中获得
 
 }
->>>>>>> Stashed changes
+

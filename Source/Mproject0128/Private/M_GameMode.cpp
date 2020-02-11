@@ -13,7 +13,7 @@
 
 #include "Kismet/GameplayStatics.h"
 //GameMode说明，目前正在修改存档部分，除此之外没有实现任何东西。
->>>>>>> Stashed changes
+
 AM_GameMode::AM_GameMode()
 {
 
