@@ -102,9 +102,7 @@ void AM_PlayerState::LoadGame(FString SlotName)
 void AM_PlayerState::BeginPlay()
 {
 	Super::BeginPlay();
-
-	//如果控制器指针为空,添加引用
-	SPController = Cast<AM_Controller>(UGameplayStatics::GetPlayerController(GetWorld(), 0));//已经在Character中获得
+	SPController = Cast<AM_Controller>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
 }
 

@@ -41,8 +41,7 @@ BeginPlay
 */
 AM_Character::AM_Character()
 {  
-	//CharacterMesh->SetSimulatePhysics(true);//物理模拟非常消耗性能，不必要的时候不要开启，比如死亡时布娃娃效果可以开启；
-
+	
 
 	//创建摄像机组件和弹簧臂
 	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraArm"));
@@ -58,13 +57,15 @@ AM_Character::AM_Character()
 	//创建基本骨骼网格体组件
 	CharacterMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh"));
 	CharacterMesh->SetupAttachment((USceneComponent*)GetCapsuleComponent());
+
 	//RootComponent = CharacterMesh;//让一个独立的胶囊体作为根组件，Mesh悬挂在根组件上或者悬挂在相机上；
 
 	//创建发射锚点组件
 	MagicSlotComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EffectSlot"));
 	MagicSlotComponent->CastShadow = false;
 	//MagicSlotComponent->SetUpAttachment(GetCapsuleComponent());
-	
+	//CharacterMesh->SetSimulatePhysics(true);//物理模拟非常消耗性能，不必要的时候不要开启，比如死亡时布娃娃效果可以开启；
+
 
 	//获取相关蓝图类的引用,类型和对象；
 	static ConstructorHelpers::FClassFinder<AActor> BP_ActorMatch(TEXT("Blueprint'/Game/BluePrint/Skill/BPM_MagicBullet.BPM_MagicBullet_C'"));
@@ -101,7 +102,6 @@ void AM_Character::MoveForward(float value)
 		AddMovementInput(Direction, value);
 	}
 }
-
 void AM_Character::MoveLeft(float value)
 {
 	if (value != 0.f && Controller) {
@@ -110,7 +110,6 @@ void AM_Character::MoveLeft(float value)
 		AddMovementInput(Direction, value);
 	}
 }
-
 void AM_Character::LookUp(float value)
 {
 	if (value != 0 && Controller)
@@ -118,7 +117,6 @@ void AM_Character::LookUp(float value)
 		AddControllerPitchInput(value);
 	}
 }
-
 void AM_Character::LookRight(float value)
 {
 	if (value != 0 && Controller)
@@ -126,12 +124,10 @@ void AM_Character::LookRight(float value)
 		AddControllerYawInput(value);
 	}
 }
-
 void AM_Character::OnStartJump()
 {
 	bPressedJump = true;
 }
-
 void AM_Character::OnStopJump()
 {
 	bPressedJump = false;
@@ -146,8 +142,8 @@ void AM_Character::Fire()
 		FVector MuzzleLocation = MagicSlotComponent->GetComponentLocation();
 		FRotator MuzzleRotation = Controller->GetControlRotation();
 		GetWorld()->SpawnActor<AM_MagicBullet>(MatchBPMgaicActor,MuzzleLocation, MuzzleRotation);
-<<<<<<< Updated upstream
-=======
+
+
 		
 		if (SPController->SPState) 
 		{
@@ -170,7 +166,7 @@ void AM_Character::Fire()
 void AM_Character::OnStartMeditation()
 {
 <<<<<<< Updated upstream
-}
+}[]
 
 
 =======

@@ -3,7 +3,6 @@
 #include "CoreMinimal.h"//核心引用文件，未包含可能会带来未知错误
 #include "GameFramework/Character.h"//继承角色类
 #include "M_MagicBullet.h"
-
 #include "M_Character.generated.h"//生成的编译文件，总是要放在最后的
 
 class USkeletalMeshComponent;
@@ -40,15 +39,15 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Mesh")
 		USkeletalMeshComponent* CharacterMesh;
 
-	UPROPERTY(EditAnywhere, Category = "Magic")
-		UStaticMeshComponent* MagicSlotComponent;
-
 	UPROPERTY(EditAnywhere, Category = "Camera")
 		USpringArmComponent* CameraArm;
 
 	UPROPERTY(EditAnywhere, Category = "Camera")
 		UCameraComponent* Camera;
 
+
+	UPROPERTY(EditAnywhere, Category = "Magic")
+		UStaticMeshComponent* MagicSlotComponent;
 
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
