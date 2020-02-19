@@ -4,6 +4,11 @@
 #include "M_EnemyAIController.h"
 #include "UObject/Object.h"
 
+
+AM_EnemyAIController::AM_EnemyAIController()
+{
+	PrimaryActorTick.bCanEverTick = true;
+}
 void AM_EnemyAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
@@ -24,7 +29,6 @@ void AM_EnemyAIController::OnSeePlayer()
 void AM_EnemyAIController::LoosePlayer()
 {
 }
-
 
 
 UObject* AM_EnemyAIController::GetPlayerPawn()
