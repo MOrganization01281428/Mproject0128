@@ -60,3 +60,7 @@ void AM_Controller::RollDownEvent()
 void AM_Controller::EscEvent()
 {
 }
+
+void AM_Controller::PlayerDead()
+{
+}

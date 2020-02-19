@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "M_EnemyAIController.h"
 #include "M_EnemyCharacter.generated.h"
+
 
 UCLASS()
 class MPROJECT0128_API AM_EnemyCharacter : public ACharacter
@@ -12,18 +14,29 @@ class MPROJECT0128_API AM_EnemyCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
+
 	AM_EnemyCharacter();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
+public:
+		class AM_EnemyAIController* SEController;
+
+public:
+	//µÐÈË¸ÐÖª
+	UPROPERTY(EditAnywhere, Category = Mesh)
+		class UPawnSensingComponent* EnemySense;
+public:
+	void AcceptDamage(int DamageVal);
+	void DestroyEvent();
+	void OnSeePlayer(APawn* PlayerChar);
+	void IsLockPlayer();
+public:
+	float HP;
 
 };

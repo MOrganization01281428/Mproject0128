@@ -14,4 +14,11 @@ class MPROJECT0128_API UM_BTTaskNodeBase : public UBTTaskNode
 {
 	GENERATED_BODY()
 	
+public:
+
+	bool InitEnemyElement(UBehaviorTreeComponent& OwnerComp);
+
+	class AM_EnemyAIController* SEController;
+
+	class AM_EnemyCharacter* SECharacter;
 };

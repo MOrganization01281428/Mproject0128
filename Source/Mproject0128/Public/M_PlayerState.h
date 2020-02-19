@@ -9,29 +9,31 @@ class AM_PlayerState :public APlayerState
 	GENERATED_BODY()
 public:
 	AM_PlayerState();
+
+	virtual void BeginPlay() override;
+
+public:
+	class AM_Controller* SPController;
 	
 public:
+
 	void setHealth(float value);
 	void setMana(float value);
-<<<<<<< Updated upstream
-=======
-	float getMana();
 
+	void AcceptDamage(int DamageVal);
+	bool IsPlayerDead();
 	void OnRecoverMana(float Recover);
 	void OnCostMana(float Cost);
 
-
 	//�浵ϵͳ
 	UFUNCTION(BlueprintCallable)
-		void SaveGame(FString SlotName);
+		void SaveState(float& HP,float& MP);
 	UFUNCTION(BlueprintCallable)
-		void LoadGame(FString SlotName);
+		void LoadState(float HP, float MP);
 
-	virtual void BeginPlay() override;
->>>>>>> Stashed changes
-
-private:
+public:
 	float Health;
 	float Mana;
+	bool IsDead;
 
 };

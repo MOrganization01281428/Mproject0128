@@ -10,10 +10,7 @@
 template<class T>
 class MPROJECT0128_API M_Singleton
 {
-	/*
-public:
-	M_Singleton();
-	~M_Singleton();*/
+
 public:
 	static void Initialize();
 	static TSharedPtr<T> Get();
@@ -25,7 +22,7 @@ public:
 //模板中这一套智能指针函数，用处就是获取一个T类型的引用。
 
 template<class T>
-TSharedPtr<T> M_Singleton<T>::TInstance = Null;
+TSharedPtr<T> M_Singleton<T>::TInstance = NULL;
 
 template<class T>
 TSharedRef<T> M_Singleton<T>::Create()

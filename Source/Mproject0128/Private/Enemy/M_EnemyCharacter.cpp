@@ -2,12 +2,14 @@
 
 
 #include "M_EnemyCharacter.h"
+#include "M_EnemyAIController.h"
 
 // Sets default values
 AM_EnemyCharacter::AM_EnemyCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+ 	PrimaryActorTick.bCanEverTick = true;
+
+	AIControllerClass = AM_EnemyAIController::StaticClass();
 
 }
 
@@ -15,7 +17,9 @@ AM_EnemyCharacter::AM_EnemyCharacter()
 void AM_EnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	SEController = Cast<AM_EnemyAIController>(GetController());
+	HP = 100;
+
 }
 
 // Called every frame
@@ -32,3 +36,31 @@ void AM_EnemyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 }
 
+void AM_EnemyCharacter::AcceptDamage(int DamageVal)
+{
+
+	//进行血值更新
+	HP = FMath::Clamp<float>(HP - DamageVal, 0.f, 500.f);
+
+	if (HP <= 0.f)
+	{
+		//告诉控制器死亡
+		SEController->EnemyDead();
+		AM_EnemyCharacter::DestroyEvent();
+	}
+	
+}
+
+void AM_EnemyCharacter::DestroyEvent()
+{
+	GetWorld()->DestroyActor(this);
+}
+
+void AM_EnemyCharacter::OnSeePlayer(APawn* PlayerChar)
+{
+
+}
+
+void AM_EnemyCharacter::IsLockPlayer()
+{
+}

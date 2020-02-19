@@ -1,4 +1,4 @@
-#include "..\Public\M_Character.h"
+#include "M_Character.h"
 
 
 #include "GameFramework/SpringArmComponent.h"//摄像机弹簧臂控制
@@ -8,6 +8,9 @@
 
 #include "Components/InputComponent.h"//输入组件
 #include "Components/SkeletalMeshComponent.h"//骨骼组件
+#include "Components/SceneComponent.h"//场景组件
+
+#include "M_PlayerState.h"
 
 #include "Kismet/GameplayStatics.h"//静态工具包，失去该引用可能会带来错误（具体未了解）
 #include "Engine.h"
@@ -51,7 +54,7 @@ AM_Character::AM_Character()
 	// Create a CameraComponent	
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(CameraArm);
-	Camera->RelativeLocation = FVector(0, 0, BaseEyeHeight); // Position the camera
+	Camera->SetRelativeLocation(FVector(0, 0, BaseEyeHeight),false); // Position the camera
 	CameraArm->bUsePawnControlRotation = false;
 
 	//创建基本骨骼网格体组件
@@ -75,7 +78,14 @@ AM_Character::AM_Character()
 	if (BP_ClassFinder.Object) { UClass* bpClass = BP_ClassFinder.Object; }
 
 }
+void AM_Character::BeginPlay()
+{
+	Super::BeginPlay();
 
+	//如果控制器指针为空,添加引用
+	SPController = Cast<AM_Controller>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+}
 void AM_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) 
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -89,11 +99,10 @@ void AM_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AM_Character::OnStartJump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AM_Character::OnStopJump);
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AM_Character::Fire);
-	PlayerInputComponent->BindAction("Meditation", IE_Pressed, this, &AM_Character::OnStartMeditation);
-	//PlayerInputComponent->BindAction("Meditation", IE_Released, this, &AM_Character::OnStopMeditation);
+
 }
 
-//基础控制行为函数组：
+//控制行为函数组：
 void AM_Character::MoveForward(float value)
 {
 	if (value != 0.f && Controller) {
@@ -133,7 +142,6 @@ void AM_Character::OnStopJump()
 	bPressedJump = false;
 	StopJumping();
 }
-
 void AM_Character::Fire()
 {
 	if (MatchBPMgaicActor)
@@ -151,53 +159,15 @@ void AM_Character::Fire()
 			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("fire Cost! Mana"));
 		}
 
->>>>>>> Stashed changes
-		//配置碰撞->信息//也可以不设置，如果actor里面设置了；
-		//Set Spawn Collision Handling Override
-		//FActorSpawnParameters ActorSpawnParams;
-		//ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-		//生成一个Actor类对象实例
-		// spawn the projectile at the muzzle
-		//GetWorld()->SpawnActor<AFPSProjectile>(MagicBulletClass, MuzzleLocation, MuzzleRotation, ActorSpawnParams);
 	}
 
 }
-
-void AM_Character::OnStartMeditation()
+bool AM_Character::IsDead()
 {
-<<<<<<< Updated upstream
-}[]
-
-
-=======
-	IsMeditation=true;
-	if (SPController->SPState && IsMeditation)
-	{
-		while (IsMeditation)
-		{
-			SPController->SPState->OnRecoverMana(10);
-			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, TEXT("[OnStartMeditation]Manarecover!:"));
-		}
-		
-	}
-	else {
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("[OnStartMeditation]ManaRecover Wrong!"));
-	}
-
+	if (SPController->SPState) return SPController->SPState->IsPlayerDead();
+	return false;
 }
-
-void AM_Character::OnStopMeditation()
+void AM_Character::AcceptDamage(int DamageVal)
 {
-	IsMeditation = false;
-
+    //if (SPController->SPState) SPController->SPState->AcceptDamage(DamageVal);
 }
-
-void AM_Character::BeginPlay()
-{
-	Super::BeginPlay();
-
-	//如果控制器指针为空,添加引用
-	SPController = Cast<AM_Controller>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-
-}
->>>>>>> Stashed changes

@@ -39,16 +39,8 @@ public:
 	class AM_Character* SPCharacter;
 	class AM_PlayerState* SPState;
 
-/*	【空地】UI委托变量
-    【空地】鼠标检测
-	【空地】射线检测
-	【空地】非角色按键 （ESC\BagPack\Tallking）
-	【空地】小地图
-*/
 	void PlayerDead();
 
-public:
-	virtual void BeginPlay() override;
 
 
 };

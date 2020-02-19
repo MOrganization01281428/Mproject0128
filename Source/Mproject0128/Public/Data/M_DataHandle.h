@@ -11,7 +11,7 @@ class MPROJECT0128_API M_DataHandle
 {
 public:
 	M_DataHandle();
-	~M_DataHandle();
+
 public:
 	
 	void InicialRecordData();
@@ -20,5 +20,7 @@ public:
 public:
 	FString RecordName;
 	FString DefaultRecordName = "SaveOne";
+	//´æµµÊý¾Ý
+	TArray<FString> RecordDataList;
 
 };
