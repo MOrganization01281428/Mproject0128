@@ -1,22 +1,21 @@
 #include "M_PlayerState.h"
-
-#include "TimerManager.h"
-#include "Engine/Engine.h"
-#include "DrawDebugHelpers.h"
-
-#include "M_Character.h"
 #include "M_Controller.h"
-
+#include "Engine.h"
 #include "Kismet/GameplayStatics.h"
-
-
-//DEFINE_LOG_CATEGORY(YourLog);
+//ï¿½ï¿½Öµï¿½ï¿½Ê¼ï¿½ï¿½
 AM_PlayerState::AM_PlayerState()
 {
-	Health = 100.0f;
-	Mana = 100.0f;
+	Health = 1000.0f;
+	Mana = 1000.0f;
 }
+//ï¿½ï¿½ï¿½Ã»ï¿½È¡
+void AM_PlayerState::BeginPlay()
+{
+	Super::BeginPlay();
+	SPController = Cast<AM_Controller>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 
+}
+//ï¿½ï¿½Öµï¿½è¶¨defaultï¿½ï¿½ï¿½ï¿½
 void AM_PlayerState::setHealth(float value)
 {
 	Health = value;
@@ -31,78 +30,51 @@ void AM_PlayerState::setMana(float value)
 {
 	Health = value;
 }
-
-float AM_PlayerState::getMana()
+//ï¿½ï¿½É«ï¿½Ëºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+void AM_PlayerState::AcceptDamage(int DamageVal)
 {
-	return Mana;
+	Health = FMath::Clamp<float>(Health - DamageVal, 0.f, 500.f);
+	//ï¿½ï¿½ï¿½ÑªÖµï¿½ï¿½ï¿½ï¿½0ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½
+	if (Health == 0 && !IsDead)
+	{
+		//ï¿½ï¿½ï¿½ß¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½
+		if (SPController) SPController->PlayerDead();
+		IsDead = true;
+	}
+}
+//ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Þ¸ï¿½
+bool AM_PlayerState::IsPlayerDead()
+{
+	return false;
 }
 
 void AM_PlayerState::OnRecoverMana(float Recover)
 {
-	while (IsMeditation)
-	{
 		FPlatformProcess::Sleep(100);
 		Mana = Mana + Recover;
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::SanitizeFloat(Mana));
-	}
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black,FString::Printf(Mana));
+	
 }
 
 void AM_PlayerState::OnCostMana(float Cost)
 {
 	FPlatformProcess::Sleep(Cost);
 	Mana = Mana + Cost;
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black, FString::SanitizeFloat(Mana));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Black,"[OnCostMana]: Mana Has change");
 }
 
-bool AM_PlayerState::SetIsMeditation(bool IsMeditation)
+void AM_PlayerState::SaveState(float& HP, float& MP)
 {
-	return  IsMeditation;
-}
+	
+	HP = Health;
+	MP = Mana;
 
-void AM_PlayerState::SaveGame(FString SlotName)
-{
-	//´´½¨Ò»¸ö´æµµ²å²Û±£´æ×Ô¶¨ÒåµÄ´æµµÊµÀý
-	UGameplayStatics::SaveGameToSlot(SaveInstance, SlotName, 0);
-
-	/*Ìí¼Óµ½´æµµ½ÇÉ«TransformÐÅÏ¢
-	ESaveInstance->ESPlayerStructInfo.PlayerTrans.SetLocation(this->GetActorLocation());
-	ESaveInstance->ESPlayerStructInfo.PlayerTrans.SetRotation(this->GetActorRotation().Quaternion());
-	ESaveInstance->ESPlayerStructInfo.PlayerTrans.SetScale3D(this->GetActorScale3D());
-	*/
-	//Ìí¼Óµ½´æµµ½ÇÉ«Health\Mana
-	SaveInstance->SPlayerStructInfo.PlayerHealth = Health;
-	SaveInstance->SPlayerStructInfo.PlayerMana = Mana;
-
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("ÓÎÏ·ÒÑ¾­´æµµ"));
-
-}
-void AM_PlayerState::LoadGame(FString SlotName)
-{
-	if (SlotName == SlotName)
-	{
-		//´Ó´æµµÊµÀýÖÐÈ¡³ö±£´æµÄÊý¾Ý
-		UGameplayStatics::LoadGameFromSlot(SlotName, 0);
-
-		/*//¶ÁÈ¡´æµµ½ÇÉ«TransformÐÅÏ¢
-		this->SetActorLocation(ESaveInstance->ESPlayerStructInfo.PlayerTrans.GetLocation());
-		this->SetActorRotation(ESaveInstance->ESPlayerStructInfo.PlayerTrans.GetRotation());
-		this->SetActorScale3D(ESaveInstance->ESPlayerStructInfo.PlayerTrans.GetScale3D());
-		*/
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("¶ÁÈ¡´æµµ³É¹¦"));
-	}
-	else
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("Ã»ÓÐÕÒµ½´æµµ"));
-
-	}
+	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("[SaveGame] success!"));
 
 }
 
-void AM_PlayerState::BeginPlay()
+void AM_PlayerState::LoadState(float HP, float MP)
 {
-	Super::BeginPlay();
-
-	//Èç¹û¿ØÖÆÆ÷Ö¸ÕëÎª¿Õ,Ìí¼ÓÒýÓÃ
-	SPController = Cast<AM_Controller>(UGameplayStatics::GetPlayerController(GetWorld(), 0));//ÒÑ¾­ÔÚCharacterÖÐ»ñµÃ
-
+	Health = HP;
+	Mana = MP;
 }

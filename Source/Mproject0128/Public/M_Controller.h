@@ -2,11 +2,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-//¹ØÁª°üº¬
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 #include "M_Character.h"
 #include "M_PlayerState.h"
 
 #include "M_Controller.generated.h"
+
+//ï¿½ï¿½ï¿½Õµï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ÖµÄ²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//ï¿½ï¿½ï¿½ÕµØ¡ï¿½UIÎ¯ï¿½ï¿½Ïµï¿½ï¿½
 
 UCLASS()
 class AM_Controller :public APlayerController
@@ -15,14 +18,32 @@ class AM_Controller :public APlayerController
 
 public:
 	AM_Controller();
+	virtual void BeginPlay() override;
+
+	virtual void Tick(float DeltaSeconds) override;
+
+	virtual void SetupInputComponent() override;
+
+
 
 public:
+	//ï¿½ï¿½ï¿½Clickï¿½Â¼ï¿½
+	void LeftClickStart();
+	void LeftClickStop();
+	void RightClickStart();
+	void RightClickStop();
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¹ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
+	void RollUpEvent();
+	void RollDownEvent();
+	//ESCï¿½Â¼ï¿½
+	void EscEvent();
+
+public:
+	//ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
 	class AM_Character* SPCharacter;
 	class AM_PlayerState* SPState;
 
 	void PlayerDead();
 
-public:
-	virtual void BeginPlay() override;
 
 };

@@ -1,25 +1,52 @@
-#include "..\Public\M_Character.h"
+#include "M_Character.h"
 
 
-#include "GameFramework/SpringArmComponent.h"//ÉãÏñ»úµ¯»É±Û¿ØÖÆ
-#include "GameFramework/CharacterMovementComponent.h"//½ÇÉ«ÒÆ¶¯¿ØÖÆ
+#include "GameFramework/SpringArmComponent.h"//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É±Û¿ï¿½ï¿½ï¿½
+#include "GameFramework/CharacterMovementComponent.h"//ï¿½ï¿½É«ï¿½Æ¶ï¿½ï¿½ï¿½ï¿½ï¿½
 
-#include "Camera/CameraComponent.h"//ÉãÏñ»ú
+#include "Camera/CameraComponent.h"//ï¿½ï¿½ï¿½ï¿½ï¿½
 
-#include "Components/InputComponent.h"//ÊäÈë×é¼þ
-#include "Components/SkeletalMeshComponent.h"//¹Ç÷À×é¼þ
+#include "Components/InputComponent.h"//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+#include "Components/SkeletalMeshComponent.h"//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+#include "Components/SceneComponent.h"//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-#include "Kismet/GameplayStatics.h"//¾²Ì¬¹¤¾ß°ü£¬Ê§È¥¸ÃÒýÓÃ¿ÉÄÜ»á´øÀ´´íÎó£¨¾ßÌåÎ´ÁË½â£©
+#include "M_PlayerState.h"
+
+#include "Kismet/GameplayStatics.h"//ï¿½ï¿½Ì¬ï¿½ï¿½ï¿½ß°ï¿½ï¿½ï¿½Ê§È¥ï¿½ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½Ü»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó£¨¾ï¿½ï¿½ï¿½Î´ï¿½Ë½â£©
 #include "Engine.h"
 
 
+//ï¿½Ü½á£º
+/*
+1.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½-Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¡ï¿½
+2.ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½-Êµï¿½Ö»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+3.ï¿½ï¿½È¡ï¿½ï¿½ï¿½Ãµï¿½Ö¸ï¿½ë£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½C++ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¡ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	ï¿½ï¿½È¡ï¿½ï¿½Òªï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã£ï¿½ï¿½ç·¢ï¿½ï¿½Ä²ï¿½ï¿½Ô¹ï¿½ï¿½ï¿½
+BeginPlay
+	ï¿½ï¿½È¡ControllerÖ¸ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½Ö£ï¿½ï¿½Æ¶ï¿½ï¿½ï¿½Fireï¿½ï¿½Meditationï¿½ï¿½
+	Movement BaseÏµï¿½ï¿½
+	FireÏµï¿½ï¿½
+	MeditationÏµï¿½ï¿½
+
+ï¿½ï¿½Characterï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ï¿½åµ¥ï¿½ï¿½
+Í¨ï¿½ï¿½ï¿½ï¿½ï¿½Ã²ï¿½Ñ¯ï¿½ï¿½ SP~ï¿½ï¿½SPControllerï¿½ï¿½
+Í¨ï¿½Å½Ó¿Ú£ï¿½ï¿½ï¿½ï¿½Þ£ï¿½
+
+Í¨ï¿½ï¿½ï¿½ï¿½ï¿½Ý£ï¿½
+ï¿½ï¿½Ê¹ï¿½Ã¼ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Þ¸ï¿½PlayerStateï¿½ÐµÄ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½Ä§ï¿½ï¿½Öµï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¡ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½æ´¢
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ëºï¿½ï¿½ï¿½ï¿½Ó´ï¿½ï¿½ï¿½ï¿½Ëºï¿½ï¿½Â¼ï¿½
+ï¿½ï¿½ï¿½ï¿½ï¿½Ú¡ï¿½ï¿½Ü´æµµÏµÍ³ï¿½ë±³ï¿½ï¿½ÏµÍ³ï¿½ï¿½Buff
+
+*/
 AM_Character::AM_Character()
 {  
-	//¹¹½¨º¯ÊýÀï£¬ÐèÒªÅäÖÃ×é¼þ£¬´´½¨Ïà¹ØÒýÓÃµÄÖ¸Õë£»
-	//CharacterMesh->SetSimulatePhysics(true);//ÎïÀíÄ£Äâ·Ç³£ÏûºÄÐÔÄÜ£¬²»±ØÒªµÄÊ±ºò²»Òª¿ªÆô£¬±ÈÈçËÀÍöÊ±²¼ÍÞÍÞÐ§¹û¿ÉÒÔ¿ªÆô£»
+	
 
-
-	//´´½¨ÉãÏñ»ú×é¼þºÍµ¯»É±Û
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Íµï¿½ï¿½É±ï¿½
 	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraArm"));
 	CameraArm->SetupAttachment(GetMesh());
 	CameraArm->bUsePawnControlRotation = true;
@@ -27,22 +54,23 @@ AM_Character::AM_Character()
 	// Create a CameraComponent	
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(CameraArm);
-	Camera->RelativeLocation = FVector(0, 0, BaseEyeHeight); // Position the camera
+	Camera->SetRelativeLocation(FVector(0, 0, BaseEyeHeight),false); // Position the camera
 	CameraArm->bUsePawnControlRotation = false;
 
-	//´´½¨»ù±¾¹Ç÷ÀÍø¸ñÌå×é¼þ
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	CharacterMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh"));
 	CharacterMesh->SetupAttachment((USceneComponent*)GetCapsuleComponent());
-	//RootComponent = CharacterMesh;//ÈÃÒ»¸ö¶ÀÁ¢µÄ½ºÄÒÌå×÷Îª¸ù×é¼þ£¬MeshÐü¹ÒÔÚ¸ù×é¼þÉÏ»òÕßÐü¹ÒÔÚÏà»úÉÏ£»
 
-	//´´½¨·¢ÉäÃªµã×é¼þ
-	MagicSlot = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EffectSlot"));
-	MagicSlot->CastShadow = false;
-	//MagicSlotComponent->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
-	//MagicSlotComponent->SetupAttachment((USceneComponent*)GetCapsuleComponent());
-	
+	//RootComponent = CharacterMesh;//ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Meshï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ï¿½ï¿½Ï»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï£ï¿½
 
-	//C++µ÷ÓÃÀ¶Í¼·½·¨1£º»ñÈ¡Ïà¹ØÀ¶Í¼ÀàµÄÒýÓÃ,ÀàÐÍºÍ¶ÔÏó£»
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ãªï¿½ï¿½ï¿½ï¿½ï¿½
+	MagicSlotComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EffectSlot"));
+	MagicSlotComponent->CastShadow = false;
+	//MagicSlotComponent->SetUpAttachment(GetCapsuleComponent());
+	//CharacterMesh->SetSimulatePhysics(true);//ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½Ç³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü£ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Ê±ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½ï¿½ï¿½ï¿½Ô¿ï¿½ï¿½ï¿½ï¿½ï¿½
+
+
+	//C++ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ÍºÍ¶ï¿½ï¿½ï¿½
 	static ConstructorHelpers::FClassFinder<AActor> BP_ActorMatch(TEXT("Blueprint'/Game/BluePrint/Skill/BPM_MagicBullet.BPM_MagicBullet_C'"));
 	if (BP_ActorMatch.Succeeded()) { MatchBPMgaicActor = BP_ActorMatch.Class; }
 
@@ -50,13 +78,20 @@ AM_Character::AM_Character()
 	if (BP_ClassFinder.Object) { UClass* bpClass = BP_ClassFinder.Object; }
 
 }
+void AM_Character::BeginPlay()
+{
+	Super::BeginPlay();
 
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	SPController = Cast<AM_Controller>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+}
 void AM_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) 
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	check(PlayerInputComponent);
-	//°ó¶¨º¯Êý
+	//ï¿½ó¶¨ºï¿½ï¿½ï¿½
 	PlayerInputComponent->BindAxis("MoveForward", this, &AM_Character::MoveForward);
 	PlayerInputComponent->BindAxis("MoveLeft", this, &AM_Character::MoveLeft);
 	PlayerInputComponent->BindAxis("LookUp", this, &AM_Character::LookUp);
@@ -64,11 +99,9 @@ void AM_Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AM_Character::OnStartJump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AM_Character::OnStopJump);
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AM_Character::Fire);
-	PlayerInputComponent->BindAction("Meditation", IE_Pressed, this, &AM_Character::OnStartMeditation);
-	PlayerInputComponent->BindAction("Meditation", IE_Released, this, &AM_Character::OnStopMeditation);
 }
 
-//»ù´¡¿ØÖÆÐÐÎªº¯Êý×é£º
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½é£º
 void AM_Character::MoveForward(float value)
 {
 	if (value != 0.f && Controller) {
@@ -77,7 +110,6 @@ void AM_Character::MoveForward(float value)
 		AddMovementInput(Direction, value);
 	}
 }
-
 void AM_Character::MoveLeft(float value)
 {
 	if (value != 0.f && Controller) {
@@ -86,7 +118,6 @@ void AM_Character::MoveLeft(float value)
 		AddMovementInput(Direction, value);
 	}
 }
-
 void AM_Character::LookUp(float value)
 {
 	if (value != 0 && Controller)
@@ -94,7 +125,6 @@ void AM_Character::LookUp(float value)
 		AddControllerPitchInput(value);
 	}
 }
-
 void AM_Character::LookRight(float value)
 {
 	if (value != 0 && Controller)
@@ -102,85 +132,41 @@ void AM_Character::LookRight(float value)
 		AddControllerYawInput(value);
 	}
 }
-
 void AM_Character::OnStartJump()
 {
 	bPressedJump = true;
 }
-
 void AM_Character::OnStopJump()
 {
 	bPressedJump = false;
 	StopJumping();
 }
-
 void AM_Character::Fire()
 {
 	if (MatchBPMgaicActor)
 	{
-		//»ñÈ¡Éú³É×ø±êÏòÁ¿
+		//ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		FVector MuzzleLocation = MagicSlot->GetComponentLocation();
 		FRotator MuzzleRotation = Controller->GetControlRotation();
 		GetWorld()->SpawnActor<AM_MagicBullet>(MatchBPMgaicActor,MuzzleLocation, MuzzleRotation);
+
+
 		
 		if (SPController->SPState) 
 		{
 			SPController->SPState->OnCostMana(100); 
-			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("fire Got! Cost Mana Character Right"));
+			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("fire Cost! Mana"));
 		}
 
-		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("fireÊ¹ÓÃ³É¹¦"));
-
-		//ÅäÖÃÅö×²->ÐÅÏ¢//Ò²¿ÉÒÔ²»ÉèÖÃ£¬Èç¹ûactorÀïÃæÉèÖÃÁË£»
-		//Set Spawn Collision Handling Override
-		//FActorSpawnParameters ActorSpawnParams;
-		//ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-		//Éú³ÉÒ»¸öActorÀà¶ÔÏóÊµÀý
-		// spawn the projectile at the muzzle
-		//GetWorld()->SpawnActor<AFPSProjectile>(MagicBulletClass, MuzzleLocation, MuzzleRotation, ActorSpawnParams);
 	}
 
 }
-
-void AM_Character::OnStartMeditation()
+bool AM_Character::IsDead()
 {
-	if (SPController->SPState)
-	{
-		SPController->SPState->SetIsMeditation(true);
-		SPController->SPState->OnRecoverMana(10);
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("ManaRecover!Character right!"));
-	}
-
+	if (SPController->SPState) return SPController->SPState->IsPlayerDead();
+	return false;
 }
-
-void AM_Character::OnStopMeditation()
+void AM_Character::AcceptDamage(int DamageVal)
 {
-	if (SPController->SPState)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("got SPController->SPState"));
-		SPController->SPState->SetIsMeditation(false);
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("ManaCostStop"));
-	}
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("havent cost"));
+    //if (SPController->SPState) SPController->SPState->AcceptDamage(DamageVal);
 }
-
-void AM_Character::BeginPlay()
-{
-	Super::BeginPlay();
-
-	//Èç¹û¿ØÖÆÆ÷Ö¸ÕëÎª¿Õ,Ìí¼ÓÒýÓÃ
-	SPController = Cast<AM_Controller>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-
-}
-/*
-float AM_Character::GetAxisValue_MoveForward()
-{
-	return GetAxisValue("MoveForward");
-}
-
-float AM_Character::GetAxisValue_MoveRight()
-{
-	return 0.0f;
-}
-*/
-

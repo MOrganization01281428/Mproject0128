@@ -1,16 +1,15 @@
 #pragma once
 
-#include "CoreMinimal.h"//ºËĞÄÒıÓÃÎÄ¼ş£¬Î´°üº¬¿ÉÄÜ»á´øÀ´Î´Öª´íÎó
-#include "GameFramework/Character.h"//¼Ì³Ğ½ÇÉ«Àà
+#include "CoreMinimal.h"//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½Î´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü»ï¿½ï¿½ï¿½ï¿½Î´Öªï¿½ï¿½ï¿½ï¿½
+#include "GameFramework/Character.h"//ï¿½Ì³Ğ½ï¿½É«ï¿½ï¿½
 
 #include "M_MagicBullet.h"
 #include "M_Controller.h"
-#include "M_PlayerState.h"
 
-
-#include "M_Character.generated.h"//Éú³ÉµÄ±àÒëÎÄ¼ş£¬×ÜÊÇÒª·ÅÔÚ×îºóµÄ
+#include "M_Character.generated.h"//ï¿½ï¿½ï¿½ÉµÄ±ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 class USkeletalMeshComponent;
+class UStaticMeshComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class AM_MagicBullet;
@@ -22,32 +21,21 @@ class AM_Character :public ACharacter
 	GENERATED_BODY()
 
 public:
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
 	AM_Character();
-
-//À¶Í¼Àà
-	//ÊµÌåÀàÒıÓÃ
-	TSubclassOf<AActor> MatchBPMgaicActor;//Õâ¸öÖ¸Õë½«×°ÔØ»ñÈ¡µÄÀ¶Í¼ÀàÒıÓÃ£¬ÎÒÃÇ¿ÚÍ·¹æ¶¨Ö»ÔÚÆ¥ÅäÀ¶Í¼ÀàBPMgaicActorÊ±Ê¹ÓÃ£»
-
-//¹ØÁªµÄÊµÌåÀà£ºMagicÊµÌå¡¢µÀ¾ß×°±¸¡¢BuffÍâÒÂµÈ£»µ«ÊÇÏÔÈ»ÎÒÃÇÒªÊ¹ÓÃµÄÊÇËûµÄÀ¶Í¼×ÓÀà£¬ÕâÀïÏÂÃæµÄ¼¸ĞĞÊÇÃ»ÓÃµÄ
-//	UPROPERTY(EditDefaultsOnly, Category = "Projectile")
-//		TSubclassOf<AM_MagicBullet> MagicBulletClass;	
-//		UClass* bpCLass;
-	//UPROPERTY(EditDefaultsOnly, Category = "PlayerState")
-	//TSubclassOf<APlayerState> PlayerState;
+	virtual void BeginPlay() override;
 
 
-//¹ØÁª¿ØÖÆÀà£ºÊı¾İ´¦Àí£¬Íæ¼Ò£¨·Ç½ÇÉ«£©¿ØÖÆ
-	
+//ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½
+
+	TSubclassOf<AActor> MatchBPMgaicActor;
+
 	class AM_Controller* SPController;
-	class AM_PlayerState* SPState;
-	
 
-//×é¼ş¹ÒÔØ
+
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	UPROPERTY(EditAnywhere, Category = "Mesh")
 		USkeletalMeshComponent* CharacterMesh;
-
-	UPROPERTY(EditAnywhere, Category = "Mesh")
-		UStaticMeshComponent* MagicSlot;
 
 	UPROPERTY(EditAnywhere, Category = "Camera")
 		USpringArmComponent* CameraArm;
@@ -55,12 +43,13 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Camera")
 		UCameraComponent* Camera;
 
+	UPROPERTY(EditAnywhere, Category = "Magic")
+		UStaticMeshComponent* MagicSlotComponent;
 
-
+//ï¿½ï¿½Îªï¿½ï¿½
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
-
-	//»ù´¡¿ØÖÆĞĞÎªº¯Êı×é£º
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½é£º
 	UFUNCTION(BlueprintCallable,Category = "Control")
 		void MoveForward(float value);
 	UFUNCTION(BlueprintCallable,Category = "Control")
@@ -74,22 +63,12 @@ public:
 	UFUNCTION(BlueprintCallable,Category = "Control")
 		void OnStopJump();
 
-	//ÌØĞÔ¿ØÖÆĞĞÎªº¯Êı×é
+//ï¿½ï¿½ï¿½Ô¿ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	UFUNCTION(BlueprintCallable,Category = "Control")
 		void Fire();
-	UFUNCTION(BlueprintCallable,Category = "Control")
-		void OnStartMeditation();
-	UFUNCTION(BlueprintCallable)
-		void OnStopMeditation();
-
-	virtual void BeginPlay() override;
-	//virtual void Tick(float DeltaTime) override;
-	/*
-public:
-	UFUNCTION(BlueprintCallable)
-	float GetAxisValue_MoveForward();
-	UFUNCTION(BlueprintCallable)
-	float GetAxisValue_MoveRight();
-	*/
+	UFUNCTION(BlueprintCallable, Category = "Control")
+		bool IsDead();
+	UFUNCTION(BlueprintCallable, Category = "Control")
+		void AcceptDamage(int DamageVal);
 
 };

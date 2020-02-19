@@ -13,14 +13,14 @@ class AM_PlayerState :public APlayerState
 	GENERATED_BODY()
 public: 
 	AM_PlayerState();
-public:
-	class AM_Controller* SPController;//已经在Character中声明，在头引用了。
+
+	virtual void BeginPlay() override;
 
 public:
-	class UM_SaveGame* SaveInstance;
-
+	class AM_Controller* SPController;
 	
 public:
+
 	void setHealth(float value);
 	float getHealth();
 	void setMana(float value);
@@ -29,7 +29,7 @@ public:
 	void OnCostMana(float Cost);
 	bool SetIsMeditation(bool IsMeditation);
 
-	//存档系统
+	//锟芥档系统
 	UFUNCTION(BlueprintCallable)
 		void SaveGame(FString SlotName);
 	UFUNCTION(BlueprintCallable)
@@ -37,9 +37,20 @@ public:
 
 	virtual void BeginPlay() override;
 
-private:
+	void AcceptDamage(int DamageVal);
+	bool IsPlayerDead();
+	void OnRecoverMana(float Recover);
+	void OnCostMana(float Cost);
+
+	//锟芥档系统
+	UFUNCTION(BlueprintCallable)
+		void SaveState(float& HP,float& MP);
+	UFUNCTION(BlueprintCallable)
+		void LoadState(float HP, float MP);
+
+public:
 	float Health;
 	float Mana;
-	bool IsMeditation;
+	bool IsDead;
 
 };

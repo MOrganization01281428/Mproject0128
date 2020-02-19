@@ -1,50 +1,37 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
+#include "M_DataHandle.h"
+#include "M_Singleton.h"
+#include "M_Singleton.h"
+#include "M_JsonHandle.h"
 
-//#include "M_DataHandle.h"
-#include "..\..\Public\Data\M_DataHandle.h"
-/*
 M_DataHandle::M_DataHandle()
 {
-	InitRecordData();
+	/*	//ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½æµµï¿½ï¿½ï¿½ï¿½*/
+	InicialRecordData();
 }
 
-M_DataHandle::~M_DataHandle()
-{	
-}
-
-void M_DataHandle::InitializeGameData()
+void M_DataHandle::InicialRecordData()
 {
+	M_Singleton<M_JsonHandle>::Get()->RecordDataJsonRead(RecordDataList);
+
+
+	FString Culture;
+	//ï¿½ï¿½È¡ï¿½æµµï¿½ï¿½ï¿½ï¿½
+	M_Singleton<M_JsonHandle>::Get()->RecordDataJsonRead(RecordDataList);
+
+}
+
+void M_DataHandle::InicialGameData()
+{
+	//ï¿½ï¿½ï¿½ï¿½
 }
 
 void M_DataHandle::AddNewRecord()
 {
-}
+	
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ÚµÄ´æµµï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½
+	RecordDataList.Add(RecordName);
+	//ï¿½ï¿½ï¿½ï¿½jsonï¿½ï¿½ï¿½ï¿½
+	M_Singleton<M_JsonHandle>::Get()->UpdateRecordData(&RecordDataList);
 
-void M_DataHandle::Initialize()
-{
-	if (!DataInstance.IsValid()) {
-		DataInstance = Create();
-
-	}
 }
-
-TSharedRef<M_DataHandle> M_DataHandle::Create()
-{
-	 TSharedRef<M_DataHandle> DataRef=MakeShareable(new M_DataHandle);
-	 return DataRef;
-}
-
-TSharedPtr<M_DataHandle> M_DataHandle::Get()
-{
-	Inicialize();
-	return DataInstance;
-}
-
-void M_DataHandle::InitRecordData()
-{
-	RecordName = FString("");
-	//¶ÁÈ¡´æµµÊý¾Ý
-	SlAiSingleton<SlAiJsonHandle>::Get()->RecordDataJsonRead(Culture, MusicVolume, SoundVolume, RecordDataList);
-}
-*/

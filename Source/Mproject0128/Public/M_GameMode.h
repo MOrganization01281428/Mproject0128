@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-
+#include "M_Save.h"
 #include "M_GameMode.generated.h"
 
 UCLASS()
@@ -12,16 +12,23 @@ class AM_GameMode :public AGameModeBase
 
 public:
 	AM_GameMode();
-
-public:
-	class AM_Controller* SPController;//¾ùÎªÖØ¸´ÉùÃ÷£¬±ØÒªÊ±É¾³ý
-	class AM_Character* SPCharacter;//¾ùÎªÖØ¸´ÉùÃ÷£¬±ØÒªÊ±É¾³ý
-	class AM_PlayerState* SPState;//¾ùÎªÖØ¸´ÉùÃ÷£¬±ØÒªÊ±É¾³ý
-
-public:
-		void InicialGameMode();
-public:
-	
-public:
+	virtual void Tick(float DeltaSeconds) override;
 	virtual void BeginPlay() override;
+
+public:
+
+	class AM_Controller* SPController;
+	class AM_Character* SPCharacter;
+	class AM_PlayerState* SPState;
+
+public:
+	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï·
+	void SaveGame();
+	//ï¿½æµµï¿½ï¿½ï¿½ï¿½
+	void LoadGame();
+	//ï¿½Ç·ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½Ø´æµµ
+	bool IsNeedLoadGame;
+	//ï¿½ï¿½Ï·ï¿½æµµÖ¸ï¿½ï¿½
+	class UM_Save* GameRecord;
+
 };
