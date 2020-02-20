@@ -58,16 +58,9 @@ AM_Character::AM_Character()
 	CameraArm->bUsePawnControlRotation = false;
 
 	//创建基本骨骼网格体组件
-	CharacterMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh"));
-	CharacterMesh->SetupAttachment((USceneComponent*)GetCapsuleComponent());
+	MagicSlotComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh"));
+	MagicSlotComponent->SetupAttachment(CameraArm);
 
-	//RootComponent = CharacterMesh;//让一个独立的胶囊体作为根组件，Mesh悬挂在根组件上或者悬挂在相机上；
-
-	//创建发射锚点组件
-	MagicSlotComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EffectSlot"));
-	MagicSlotComponent->CastShadow = false;
-	//MagicSlotComponent->SetUpAttachment(GetCapsuleComponent());
-	//CharacterMesh->SetSimulatePhysics(true);//物理模拟非常消耗性能，不必要的时候不要开启，比如死亡时布娃娃效果可以开启；
 
 
 	//获取相关蓝图类的引用,类型和对象；
@@ -150,14 +143,14 @@ void AM_Character::Fire()
 		FVector MuzzleLocation = MagicSlotComponent->GetComponentLocation();
 		FRotator MuzzleRotation = Controller->GetControlRotation();
 		GetWorld()->SpawnActor<AM_MagicBullet>(MatchBPMgaicActor,MuzzleLocation, MuzzleRotation);
-
-
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("fire Cost! Mana"));
 		
 		if (SPController->SPState) 
 		{
 			SPController->SPState->OnCostMana(100); 
-			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, TEXT("fire Cost! Mana"));
+		
 		}
+
 
 	}
 

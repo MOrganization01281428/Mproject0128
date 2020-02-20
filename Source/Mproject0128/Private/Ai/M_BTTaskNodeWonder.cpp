@@ -4,6 +4,7 @@
 #include "M_BTTaskNodeWonder.h"
 #include "M_EnemyAIController.h"
 #include "M_EnemyCharacter.h"
+#include "M_Types.h"
 #include "NavigationSystem.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -12,7 +13,7 @@
 
 
 EBTNodeResult::Type UM_BTTaskNodeWonder::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
-{/*
+{
 	//如果初始化敌人参数不成功,直接返回失败
 	if (!InitEnemyElement(OwnerComp)) return EBTNodeResult::Failed;
 
@@ -23,22 +24,20 @@ EBTNodeResult::Type UM_BTTaskNodeWonder::ExecuteTask(UBehaviorTreeComponent& Own
 	//保存随机的位置
 	FVector DesLoc(0.f);
 	//使用导航系统获取随机点
-	UNavigationSystem::K2_GetRandomReachablePointInRadius(SEController, WanderOrigin, DesLoc, WanderRadius);
+	UNavigationSystemV1::K2_GetRandomReachablePointInRadius(SEController, WanderOrigin, DesLoc, WanderRadius);
 	//当距离小于500时,重新找点
 	while (FVector::Distance(WanderOrigin, DesLoc) < 500.f)
 	{
 		//使用导航系统重新获取随机点
-		UNavigationSystem::K2_GetRandomReachablePointInRadius(SEController, WanderOrigin, DesLoc, WanderRadius);
+		UNavigationSystemV1::K2_GetRandomReachablePointInRadius(SEController, WanderOrigin, DesLoc, WanderRadius);
 	}
-	//修改速度为100
-	SECharacter->SetMaxSpeed(100.f);
 	//修改目的地
 	OwnerComp.GetBlackboardComponent()->SetValueAsVector(Destination.SelectedKeyName, DesLoc);
 	//获取停顿时长
 	float TotalWaitTime = SECharacter->GetIdleWaitTime();
 	//修改等待时长
 	OwnerComp.GetBlackboardComponent()->SetValueAsFloat(WaitTime.SelectedKeyName, TotalWaitTime);
-	//返回成功*/
+	//返回成功
 	return EBTNodeResult::Succeeded;
 	
 }

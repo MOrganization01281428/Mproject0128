@@ -33,8 +33,8 @@ public:
 
 
 //组件挂载
-	UPROPERTY(EditAnywhere, Category = "Mesh")
-		USkeletalMeshComponent* CharacterMesh;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
+		USkeletalMeshComponent* MagicSlotComponent;
 
 	UPROPERTY(EditAnywhere, Category = "Camera")
 		USpringArmComponent* CameraArm;
@@ -42,8 +42,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Camera")
 		UCameraComponent* Camera;
 
-	UPROPERTY(EditAnywhere, Category = "Magic")
-		UStaticMeshComponent* MagicSlotComponent;
 
 //行为绑定
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;

@@ -4,12 +4,13 @@
 #include "M_BTTaskNodeFollow.h"
 #include "M_EnemyAIController.h"
 #include "M_EnemyCharacter.h"
+#include "M_Types.h"
 #include "NavigationSystem.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 EBTNodeResult::Type UM_BTTaskNodeFollow::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
-{/*
+{
 	//如果初始化敌人参数不成功,直接返回失败
 	if (!InitEnemyElement(OwnerComp)) return EBTNodeResult::Failed;
 	//范围是5
@@ -27,7 +28,7 @@ EBTNodeResult::Type UM_BTTaskNodeFollow::ExecuteTask(UBehaviorTreeComponent& Own
 		//保存随机的位置
 		FVector DesLoc(0.f);
 		//使用导航系统获取随机点
-		UNavigationSystem::K2_GetRandomReachablePointInRadius(SEController, ChaseOrigin, DesLoc, ChaseRadius);
+		UNavigationSystemV1::K2_GetRandomReachablePointInRadius(SEController, ChaseOrigin, DesLoc, ChaseRadius);
 		//修改目的地
 		OwnerComp.GetBlackboardComponent()->SetValueAsVector(Destination.SelectedKeyName, DesLoc);
 	}
@@ -36,6 +37,6 @@ EBTNodeResult::Type UM_BTTaskNodeFollow::ExecuteTask(UBehaviorTreeComponent& Own
 		//如果距离小于100.f,那么设置敌人当前的位置为目标位置
 		OwnerComp.GetBlackboardComponent()->SetValueAsVector(Destination.SelectedKeyName, SECharacter->GetActorLocation());
 	}
-	//返回成功*/
+	//返回成功
 	return EBTNodeResult::Succeeded;
 }

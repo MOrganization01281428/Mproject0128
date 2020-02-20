@@ -28,13 +28,18 @@ public:
 
 public:
 	//敌人感知
-	UPROPERTY(EditAnywhere, Category = Mesh)
+	UPROPERTY(EditAnywhere, Category = "Mesh")
 		class UPawnSensingComponent* EnemySense;
 public:
 	void AcceptDamage(int DamageVal);
 	void DestroyEvent();
+
+	//行为树模块
 	void OnSeePlayer(APawn* PlayerChar);
-	void IsLockPlayer();
+	bool IsLockPlayer();
+	//获取Idle等待时长
+	float GetIdleWaitTime();
+
 public:
 	float HP;
 

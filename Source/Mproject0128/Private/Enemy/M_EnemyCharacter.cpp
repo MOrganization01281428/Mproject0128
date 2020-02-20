@@ -3,6 +3,7 @@
 
 #include "M_EnemyCharacter.h"
 #include "M_EnemyAIController.h"
+#include "GameFramework/Actor.h"
 
 // Sets default values
 AM_EnemyCharacter::AM_EnemyCharacter()
@@ -10,6 +11,7 @@ AM_EnemyCharacter::AM_EnemyCharacter()
  	PrimaryActorTick.bCanEverTick = true;
 
 	AIControllerClass = AM_EnemyAIController::StaticClass();
+	SEController = Cast<AM_EnemyAIController>(GetController());
 
 }
 
@@ -17,7 +19,6 @@ AM_EnemyCharacter::AM_EnemyCharacter()
 void AM_EnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	SEController = Cast<AM_EnemyAIController>(GetController());
 	HP = 100;
 
 }
@@ -58,9 +59,33 @@ void AM_EnemyCharacter::DestroyEvent()
 
 void AM_EnemyCharacter::OnSeePlayer(APawn* PlayerChar)
 {
+	if (Cast<AM_Character>(PlayerChar)) {
+
+		//告诉控制器我看到玩家了
+		if (SEController) SEController->OnSeePlayer();
+	}
 
 }
-
-void AM_EnemyCharacter::IsLockPlayer()
+bool AM_EnemyCharacter::IsLockPlayer()
 {
+	if (SEController) return SEController->IsLockPlayer;
+	return false;
+}
+
+float AM_EnemyCharacter::GetIdleWaitTime()
+{
+		//如果动作蓝图不存在直接返回3秒暂时没有动画，统一返回4秒
+	//if (!SEAnim) return 3.f;
+	//创建随机流
+	FRandomStream Stream;
+	Stream.GenerateNewSeed();
+	int IdleTpye = Stream.RandRange(0, 2);
+	//float AnimLength = SEAnim->SetIdelType(IdleTpye);
+	//更新种子
+	Stream.GenerateNewSeed();
+	//产生动作次数
+	int AnimCount = Stream.RandRange(1, 3);
+	//返回全部的动画时长
+	return 4.0f;
+	//return AnimLength * AnimCount;
 }

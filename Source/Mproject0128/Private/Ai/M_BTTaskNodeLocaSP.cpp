@@ -4,6 +4,7 @@
 #include "M_BTTaskNodeLocaSP.h"
 #include "M_EnemyAIController.h"
 #include "M_EnemyCharacter.h"
+#include "M_Types.h"
 #include "NavigationSystem.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -12,33 +13,24 @@
 
 
 EBTNodeResult::Type UM_BTTaskNodeLocaSP::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
-{/*
+{
 	//如果初始化敌人参数不成功,直接返回失败
 	if (!InitEnemyElement(OwnerComp)) return EBTNodeResult::Failed;
 
-	//溜达范围是1000
-	const float WanderRadius = 1000.f;
-	//溜达起点是自己的位置
-	const FVector WanderOrigin = SECharacter->GetActorLocation();
+	//范围是20以内
+	const float ChaseRadius = 20.f;
+	//获取玩家到敌人之间的单位向量
+	FVector SPToSE = SEController->GetPlayerLocation() - SECharacter->GetActorLocation();
+	SPToSE.Normalize();
+	//探索起点是玩家位置减去与敌人之间距离的一点点
+	const FVector ChaseOrigin = SEController->GetPlayerLocation() - 100.f * SPToSE;
 	//保存随机的位置
 	FVector DesLoc(0.f);
 	//使用导航系统获取随机点
-	UNavigationSystem::K2_GetRandomReachablePointInRadius(SEController, WanderOrigin, DesLoc, WanderRadius);
-	//当距离小于500时,重新找点
-	while (FVector::Distance(WanderOrigin, DesLoc) < 500.f)
-	{
-		//使用导航系统重新获取随机点
-		UNavigationSystem::K2_GetRandomReachablePointInRadius(SEController, WanderOrigin, DesLoc, WanderRadius);
-	}
-	//修改速度为100
-	SECharacter->SetMaxSpeed(100.f);
+	UNavigationSystemV1::K2_GetRandomReachablePointInRadius(SEController, ChaseOrigin, DesLoc, ChaseRadius);
 	//修改目的地
 	OwnerComp.GetBlackboardComponent()->SetValueAsVector(Destination.SelectedKeyName, DesLoc);
-	//获取停顿时长
-	float TotalWaitTime = SECharacter->GetIdleWaitTime();
-	//修改等待时长
-	OwnerComp.GetBlackboardComponent()->SetValueAsFloat(WaitTime.SelectedKeyName, TotalWaitTime);
-	//返回成功*/
+	//返回成功
 	return EBTNodeResult::Succeeded;
 	
 }
