@@ -57,9 +57,15 @@ AM_Character::AM_Character()
 	Camera->SetRelativeLocation(FVector(0, 0, BaseEyeHeight),false); // Position the camera
 	CameraArm->bUsePawnControlRotation = false;
 
+<<<<<<< Updated upstream
 	//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	CharacterMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh"));
 	CharacterMesh->SetupAttachment((USceneComponent*)GetCapsuleComponent());
+=======
+	//´´½¨»ù±¾¹Ç÷ÀÍø¸ñÌå×é¼þ
+	MagicSlotComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("MagicSlotComponent"));
+	MagicSlotComponent->SetupAttachment(CameraArm);
+>>>>>>> Stashed changes
 
 	//RootComponent = CharacterMesh;//ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Meshï¿½ï¿½ï¿½ï¿½ï¿½Ú¸ï¿½ï¿½ï¿½ï¿½ï¿½Ï»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï£ï¿½
 
